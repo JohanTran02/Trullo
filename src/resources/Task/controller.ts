@@ -24,4 +24,19 @@ async function GetTasks(req: Request, res: Response) {
     }
 }
 
-export { GetTasks }
+async function GetTask(req: Request, res: Response) {
+    const { taskId } = req.params;
+
+    try {
+        const task = await Task.findById(taskId);
+
+        if (!task) res.status(404).send("Task not found");
+        else return res.status(200).json(task);
+
+    } catch (e) {
+        console.error("Error details:", e);
+        res.status(500).json({ e: "Database query failed!" });
+    }
+}
+
+export { GetTasks, GetTask }
