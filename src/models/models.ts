@@ -1,22 +1,22 @@
 import { model, Model, Schema } from "mongoose";
-import { ITask } from "../resources/Task/types";
-import { IUser } from "../resources/User/types";
+import { ITask } from "../resources/Task/types.ts";
+import { IUser } from "../resources/User/types.ts";
 
 const taskSchema = new Schema<ITask, Model<ITask>>({
-    title: String,
-    description: String,
-    status: String,
-    assignedTo: [String],
-    createdAt: Date,
-    finishedBy: String,
-    tags: [String],
+    title: { type: String },
+    description: { type: String },
+    status: { type: String, default: "to-do" },
+    assignedTo: { type: [String] },
+    createdAt: { type: Date, default: Date.now },
+    finishedBy: { type: String },
+    tags: { type: [String] },
 })
 
 const userSchema = new Schema<IUser, Model<IUser>>({
-    name: String,
-    email: String,
-    password: String,
-    role: String,
+    name: { type: String },
+    email: { type: String },
+    password: { type: String },
+    role: { type: String },
 })
 
 const User = model<IUser>("User", userSchema)
