@@ -1,6 +1,6 @@
 import express from "express"
 import cors from "cors"
-import { connectToDB } from "./connect";
+import { connectToDB } from "./connect.ts";
 
 connectToDB()
 const app = express();
