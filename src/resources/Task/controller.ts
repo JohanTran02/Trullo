@@ -16,11 +16,12 @@ POST Create one task api/tasks
 
 async function GetTasks(req: Request, res: Response) {
     try {
-        const tasks = await Task.find({ project: { _id: 1 } });
-        return res.status(200).json({ tasks });
+        const tasks = await Task.find();
+        return res.status(200).json(tasks);
     } catch (e) {
         console.error("Error details:", e);
         res.status(500).json({ e: "Database query failed!" });
     }
 }
 
+export { GetTasks }
