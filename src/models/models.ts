@@ -3,20 +3,20 @@ import { ITask } from "../resources/Task/types";
 import { IUser } from "../resources/User/types";
 
 const taskSchema = new Schema<ITask, Model<ITask>>({
-    title: { type: String },
-    description: { type: String },
-    status: { type: String },
-    assignedTo: { type: [String] },
-    createdAt: { type: Date },
-    finishedBy: { type: String },
-    tags: { type: [String] },
+    title: String,
+    description: String,
+    status: String,
+    assignedTo: [String],
+    createdAt: Date,
+    finishedBy: String,
+    tags: [String],
 })
 
 const userSchema = new Schema<IUser, Model<IUser>>({
-    name: { type: String },
-    email: { type: String },
-    password: { type: String },
-    role: { type: String },
+    name: String,
+    email: String,
+    password: String,
+    role: String,
 })
 
 const User = model<IUser>("User", userSchema)
