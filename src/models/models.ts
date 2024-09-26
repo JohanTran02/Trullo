@@ -1,13 +1,13 @@
 import { model, Model, Schema } from "mongoose";
-import { ITask } from "../resources/Task/types";
-import { IUser } from "../resources/User/types";
+import { ITask } from "../resources/Task/types.ts";
+import { IUser } from "../resources/User/types.ts";
 
 const taskSchema = new Schema<ITask, Model<ITask>>({
     title: { type: String },
     description: { type: String },
-    status: { type: String },
+    status: { type: String, default: "to-do" },
     assignedTo: { type: [String] },
-    createdAt: { type: Date },
+    createdAt: { type: Date, default: Date.now },
     finishedBy: { type: String },
     tags: { type: [String] },
 })
