@@ -1,14 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "ES2023",
+    "useDefineForClassFields": true,
     "lib": [
-      "ES2023"
+      "ES2023",
+      "DOM",
+      "DOM.Iterable"
     ],
-    "module": "ES6",
+    "module": "Node16",
     "skipLibCheck": true,
     "esModuleInterop": true,
     /* Bundler mode */
-    "moduleResolution": "Bundler",
+    "moduleResolution": "Node16",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",

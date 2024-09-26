@@ -1,4 +1,4 @@
-import { Task } from "../../models/models";
+import { Task } from "../../models/models.ts";
 import { Request, Response } from "express";
 // Möjlighet att skapa, läsa, uppdatera och ta bort en Task
 /* 
