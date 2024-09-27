@@ -16,7 +16,7 @@ const userSchema = new Schema<IUser, Model<IUser>>({
     name: { type: String },
     email: { type: String },
     password: { type: String },
-    role: { type: String },
+    role: { type: String, default: "user" },
 })
 
 const User = model<IUser>("User", userSchema)
