@@ -30,7 +30,7 @@ const userSchema = new Schema<IUser, Model<IUser>>({
     password: {
         type: String,
         required: [true, "Password is required"],
-        minlength: 6,
+        minlength: [6, "Password must be atleast 6 characters long"],
         maxlength: 20,
         unique: true,
         trim: true,
