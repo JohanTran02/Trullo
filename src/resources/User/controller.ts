@@ -1,6 +1,8 @@
 import { User } from "../../models/models.ts";
 import { Request, Response } from "express";
 import { IUser } from "./types.ts";
+import { asyncErrorHandler } from "../Error/asyncErrorHandler.ts";
+import { CustomError } from "../Error/types.ts";
 
 // Möjlighet att skapa, läsa, uppdatera och ta bort en User
 /* 
@@ -16,32 +18,29 @@ DELETE Delete one user api/users/:userId
 POST Create one user api/users
 */
 
-async function getUsers(req: Request, res: Response) {
-    try {
-        const users: IUser[] = await User.find();
-        return res.status(200).json(users);
-    } catch (e) {
-        console.error("Error details:", e);
-        res.status(500).json({ e: "Database query failed!" });
-    }
-}
+const getUsers = asyncErrorHandler(async (req: Request, res: Response) => {
+    const users: IUser[] = await User.find();
 
-async function getUser(req: Request, res: Response) {
+    res.status(200).json({
+        status: "success",
+        data: users
+    });
+})
+
+const getUser = asyncErrorHandler(async (req: Request, res: Response) => {
     const { userId } = req.params;
 
-    try {
-        const user = await User.findById(userId);
+    const user = await User.findById(userId);
 
-        if (!user) res.status(404).send("User not found");
-        else return res.status(200).json(user);
+    if (!user) throw new CustomError("User not found", 404);
 
-    } catch (e) {
-        console.error("Error details:", e);
-        res.status(500).json("Database query failed!");
-    }
-}
+    res.status(200).json({
+        status: "success",
+        data: user
+    });
+})
 
-async function updateUser(req: Request, res: Response) {
+const updateUser = asyncErrorHandler(async (req: Request, res: Response) => {
     const { userId } = req.params;
     const updatedUser = req.body;
     // type TaskKey = keyof IUser;
@@ -51,45 +50,38 @@ async function updateUser(req: Request, res: Response) {
     // for (const [key, value] of Object.entries(updatedTask)) {
     // }
 
-    try {
-        const user = await User.findByIdAndUpdate(userId, updatedUser, { new: true });
+    const user = await User.findByIdAndUpdate(userId, updatedUser, { new: true, runValidators: true, context: "query" });
 
-        if (!user) res.status(404).send("User not found");
-        else return res.status(200).json(user);
+    if (!user) throw new CustomError("User not found", 404);
 
-    } catch (e) {
-        console.error("Error details:", e);
-        res.status(500).json("Database query failed!");
-    }
-}
+    res.status(200).json({
+        status: "success",
+        data: user
+    });
+})
 
-async function createUser(req: Request, res: Response) {
+const createUser = asyncErrorHandler(async (req: Request, res: Response) => {
     const createdUser: IUser = req.body;
 
-    try {
-        const user = await User.create(createdUser);
+    const user = await User.create(createdUser);
 
-        return res.status(200).json(user);
+    res.status(200).json({
+        status: "success",
+        data: user
+    });
+})
 
-    } catch (e) {
-        console.error("Error details:", e);
-        res.status(500).json("Database query failed!");
-    }
-}
-
-async function deleteUser(req: Request, res: Response) {
+const deleteUser = asyncErrorHandler(async (req: Request, res: Response) => {
     const { userId } = req.params;
 
-    try {
-        const user = await User.findByIdAndDelete(userId);
+    const user = await User.findByIdAndDelete(userId);
 
-        if (!user) res.status(404).send("User not found");
-        else return res.status(200).json(user);
+    if (!user) throw new CustomError("User not found", 404);
 
-    } catch (e) {
-        console.error("Error details:", e);
-        res.status(500).json("Database query failed!");
-    }
-}
+    res.status(200).json({
+        status: "success",
+        data: user
+    });
+})
 
 export { getUser, getUsers, updateUser, deleteUser, createUser }

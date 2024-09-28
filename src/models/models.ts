@@ -21,8 +21,20 @@ const taskSchema = new Schema<ITask, Model<ITask>>({
 
 const userSchema = new Schema<IUser, Model<IUser>>({
     name: { type: String },
-    email: { type: String, required: [true, "Email is required"] },
-    password: { type: String, required: [true, "Password is required"] },
+    email: {
+        type: String, required: [true, "Email is required"],
+        trim: true,
+        unique: true,
+        match: /(.+)@(.+){2,}\.(.+){2,}/
+    },
+    password: {
+        type: String,
+        required: [true, "Password is required"],
+        minlength: 6,
+        maxlength: 20,
+        unique: true,
+        trim: true,
+    },
     role: { type: String, default: "user" },
 })
 
