@@ -13,10 +13,12 @@ const taskSchema = new Schema<ITask, Model<ITask>>({
             message: "{VALUE} is not a valid status."
         },
     },
-    assignedTo: { type: [String] },
+    assignedTo: [{ type: Schema.Types.ObjectId, ref: "User", default: ["Not assigned"] }],
     createdAt: { type: Date, default: Date.now },
-    finishedBy: { type: String },
-    tags: { type: [String] },
+    finishedBy: { type: String, default: "Not finished" },
+    tags: {
+        type: [String], default: [] as string[]
+    },
 })
 
 const userSchema = new Schema<IUser, Model<IUser>>({
