@@ -10,7 +10,7 @@ const taskSchema = new Schema<ITask, Model<ITask>>({
         default: "to-do",
         enum: {
             values: ["to-do", "in-progress", "blocked", "done"],
-            message: "{VALUE} is not supported for status"
+            message: "{VALUE} is not a valid status."
         },
     },
     assignedTo: { type: [String] },
@@ -25,7 +25,7 @@ const userSchema = new Schema<IUser, Model<IUser>>({
         type: String, required: [true, "Email is required"],
         trim: true,
         unique: true,
-        match: /(.+)@(.+){2,}\.(.+){2,}/
+        match: [/(.+)@(.+){2,}\.(.+){2,}/, "{VALUE} is not a valid email."]
     },
     password: {
         type: String,
