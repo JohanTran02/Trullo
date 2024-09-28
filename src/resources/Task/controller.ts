@@ -1,9 +1,9 @@
-import { Task } from "../../models/models.ts";
 import { Request, Response } from "express";
 import { ITask } from "./types.ts";
 import { asyncErrorHandler } from "../Error/asyncErrorHandler.ts";
 import { CustomError } from "../Error/types.ts";
 import { checkDuplicateValue } from "../Error/errorHandler.ts";
+import { Task } from "./models.ts";
 
 // Möjlighet att skapa, läsa, uppdatera och ta bort en Task
 /* 
