@@ -72,7 +72,7 @@ const updateTaskTags = asyncErrorHandler(async (req: Request, res: Response) => 
 
     checkDuplicateValue(task.tags, tags)
 
-    const updatedTask = await task.updateOne({ $addToSet: { tags: tags }, }, { new: true })
+    const updatedTask = await task.updateOne({ $addToSet: { tags: tags } }, { new: true })
 
     res.status(200).json({
         status: "success",

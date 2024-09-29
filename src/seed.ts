@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
 import { faker } from "@faker-js/faker";
-import { Task, User } from "./models/models.ts";
 import { connectToDB } from "./connect.ts";
 import { ITask } from "./resources/Task/types.ts";
 import { IUser } from "./resources/User/types.ts";
+import { User } from "./resources/User/models.ts";
+import { Project } from "./resources/Project/models.ts";
+import { Task } from "./resources/Task/models.ts";
 
 connectToDB()
 
@@ -35,19 +37,12 @@ function createRandomTask(): ITask {
         title: faker.lorem.lines(),
         description: faker.lorem.paragraph(),
         status: "to-do",
-        assignedTo: ["test"],
+        assignedTo: [],
         createdAt: new Date(Date.now()),
         finishedBy: "test",
         tags: ["Big"],
     }
 }
-
-// export interface IUser {
-//     name: string,
-//     email: string,
-//     password: string,
-//     role: "admin" | "user"
-// }
 
 function createRandomUser(): IUser {
     return {
@@ -58,31 +53,38 @@ function createRandomUser(): IUser {
     }
 }
 
-
-
-// const fakeTasks = generateTasks()
-// //Remove tasks 
-// await Task.deleteMany({}).then(() => {
-//     console.log("Succesfully removed all tasks");
-// }).catch((err) => console.log(err));
-
-// //Generate fake tasks
-// await Task.insertMany(fakeTasks).then(() => {
-//     console.log("Succesfully saved tasks");
-//     mongoose.connection.close();
-//     process.exit(0);
-// }).catch((err) => console.log(err));
-
-
-const fakeUsers = generateUsers();
-//Remove users
-await User.deleteMany({}).then(() => {
-    console.log("Succesfully removed all users");
+const fakeTasks = generateTasks()
+//Remove tasks 
+await Task.deleteMany({}).then(() => {
+    console.log("Succesfully removed all tasks");
 }).catch((err) => console.log(err));
 
-//Generate fake users
-await User.insertMany(fakeUsers).then(() => {
-    console.log("Succesfully saved users");
+// //Generate fake tasks
+await Task.insertMany(fakeTasks).then(() => {
+    console.log("Succesfully saved tasks");
     mongoose.connection.close();
     process.exit(0);
 }).catch((err) => console.log(err));
+
+
+// async function createProject() {
+//     await Project.create({ name: "test" })
+//     console.log("Succesfully saved projects");
+//     mongoose.connection.close();
+// }
+
+// createProject();
+
+// const fakeUsers = generateUsers();
+
+// //Remove users
+// await User.deleteMany({}).then(() => {
+//     console.log("Succesfully removed all users");
+// }).catch((err) => console.log(err));
+
+// //Generate fake users
+// await User.insertMany(fakeUsers).then(() => {
+//     console.log("Succesfully saved users");
+//     mongoose.connection.close();
+//     process.exit(0);
+// }).catch((err) => console.log(err));
