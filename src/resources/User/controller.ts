@@ -1,8 +1,8 @@
-import { User } from "../../models/models.ts";
 import { Request, Response } from "express";
 import { IUser } from "./types.ts";
 import { asyncErrorHandler } from "../Error/asyncErrorHandler.ts";
 import { CustomError } from "../Error/types.ts";
+import { User } from "./models.ts";
 
 // Möjlighet att skapa, läsa, uppdatera och ta bort en User
 /* 

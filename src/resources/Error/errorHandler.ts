@@ -41,3 +41,21 @@ const castErrorHandler = (castError: CastError) => {
 const documentErrorHandler = (documentError: mongoose.Error.DocumentNotFoundError) => {
     return new CustomError("Document not found", 404, documentError);
 }
+
+export const checkDuplicateValue = (values: string[], newValues: string[]) => {
+    const invalidTags = newValues.filter(value => !/^[a-zA-Z0-9]+$/.test(value));
+
+    if (invalidTags.length > 0) {
+        throw new CustomError(`Invalid tags: ${invalidTags.join(', ')}`, 400);
+    }
+
+    const allValues = [...values, ...newValues].map(tag => tag.toLowerCase())
+    const uniqueValues = new Set(allValues);
+    const hasDuplicates = uniqueValues.size !== allValues.length;
+
+    if (hasDuplicates) {
+        const duplicateValues = allValues.filter((tag, index) => allValues.indexOf(tag) !== index);
+        const uniqueDuplicateValues = [...new Set(duplicateValues)]
+        throw new CustomError(`Duplicate tags are not allowed: ${uniqueDuplicateValues.join(', ')}`, 400);
+    }
+}

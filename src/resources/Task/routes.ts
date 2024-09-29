@@ -1,5 +1,5 @@
 import express from "express"
-import { createTask, getTask, getTasks, updateTask } from "./controller.ts";
+import { createTask, getTask, getTasks, updateTask, updateTaskTags } from "./controller.ts";
 
 
 // Möjlighet att skapa, läsa, uppdatera och ta bort en Task
@@ -21,6 +21,7 @@ const router = express.Router();
 router.get("", getTasks)
 router.get("/:taskId", getTask)
 router.put("/:taskId", updateTask)
+router.put("/tags/:taskId", updateTaskTags)
 router.post("", createTask)
 
 export default router;

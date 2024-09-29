@@ -1,8 +1,9 @@
-import { Task } from "../../models/models.ts";
 import { Request, Response } from "express";
 import { ITask } from "./types.ts";
 import { asyncErrorHandler } from "../Error/asyncErrorHandler.ts";
 import { CustomError } from "../Error/types.ts";
+import { checkDuplicateValue } from "../Error/errorHandler.ts";
+import { Task } from "./models.ts";
 
 // Möjlighet att skapa, läsa, uppdatera och ta bort en Task
 /* 
@@ -49,13 +50,33 @@ const updateTask = asyncErrorHandler(async (req: Request, res: Response) => {
 
     // for (const [key, value] of Object.entries(updatedTask)) {
     // }
-    const task = await Task.findByIdAndUpdate(taskId, updatedTask, { new: true, runValidators: true, context: "query" });
+    const task = await Task.findByIdAndUpdate(taskId, updatedTask, { new: true, runValidators: true });
 
     if (!task) throw new CustomError("Task not found", 404);
 
     res.status(200).json({
         status: "success",
         data: task
+    });
+})
+
+const updateTaskTags = asyncErrorHandler(async (req: Request, res: Response) => {
+    const { taskId } = req.params;
+    const { tags }: ITask = req.body;
+
+    if (tags.length < 1) throw new CustomError("Tags not found", 404);
+
+    const task = await Task.findById(taskId, {}, { new: true });
+
+    if (!task) throw new CustomError("Task not found", 404);
+
+    checkDuplicateValue(task.tags, tags)
+
+    const updatedTask = await task.updateOne({ $addToSet: { tags: tags } }, { new: true })
+
+    res.status(200).json({
+        status: "success",
+        data: updatedTask
     });
 })
 
@@ -82,4 +103,4 @@ const deleteTask = asyncErrorHandler(async (req: Request, res: Response) => {
     });
 })
 
-export { getTask, getTasks, updateTask, deleteTask, createTask }
+export { getTask, getTasks, updateTask, deleteTask, createTask, updateTaskTags }
