@@ -5,4 +5,3 @@ export const asyncErrorHandler = (func: RequestHandler) => {
         Promise.resolve(func(req, res, next)).catch(next)
     }
 }
-

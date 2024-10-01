@@ -3,6 +3,7 @@ import cors from "cors"
 import { connectToDB } from "./connect.ts";
 import taskRoutes from "./resources/Task/routes.ts"
 import projectRoutes from "./resources/Project/routes.ts"
+import userRoutes from "./resources/User/routes.ts"
 import { errorHandler } from "./resources/Error/errorHandler.ts";
 
 connectToDB()
@@ -12,6 +13,8 @@ app.use(cors());
 
 app.use("/api/tasks", taskRoutes)
 app.use("/api/project", projectRoutes)
+app.use("/api/users", userRoutes)
+
 const port = 3000;
 
 app.use(errorHandler);
