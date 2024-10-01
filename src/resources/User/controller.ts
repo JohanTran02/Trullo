@@ -1,25 +1,21 @@
 import { Request, Response } from "express";
-import { IUser } from "./types.ts";
+import { IUser, readPermissions } from "./types.ts";
 import { asyncErrorHandler } from "../Error/asyncErrorHandler.ts";
 import { CustomError } from "../Error/types.ts";
 import { User } from "./models.ts";
+import bcrypt from "bcrypt"
+import { AuthenticatedRequest } from "../Auth/middleware.ts";
 
-// Möjlighet att skapa, läsa, uppdatera och ta bort en User
-/* 
-Create User
-Read User
-Update User
-Delete User
+const getUsers = asyncErrorHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const user = req.user as IUser;
+    let readProperties: string[] = [];
 
-GET Retrieve all users api/users
-GET Retrieve one user api/users/:userId
-UPDATE Update one user api/users/:userId
-DELETE Delete one user api/users/:userId
-POST Create one user api/users
-*/
+    if (!user) throw new CustomError("User not found.", 401);
 
-const getUsers = asyncErrorHandler(async (req: Request, res: Response) => {
-    const users: IUser[] = await User.find();
+    if (user.role === "admin") readProperties = readPermissions["admin"]
+    else readProperties = readPermissions["user"]
+
+    const users: IUser[] = await User.find().select(readProperties.join(" "));
 
     res.status(200).json({
         status: "success",
@@ -27,43 +23,45 @@ const getUsers = asyncErrorHandler(async (req: Request, res: Response) => {
     });
 })
 
-const getUser = asyncErrorHandler(async (req: Request, res: Response) => {
-    const { userId } = req.params;
-
-    const user = await User.findById(userId);
-
-    if (!user) throw new CustomError("User not found", 404);
+const currentUser = asyncErrorHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const user = req.user;
 
     res.status(200).json({
         status: "success",
         data: user
+    });
+})
+
+const getUser = asyncErrorHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const { email } = req.params;
+    const user = req.user as IUser;
+    let readProperties: string[] = [];
+
+    if (!user) throw new CustomError("User not found.", 401);
+
+    if (user.role === "admin") readProperties = readPermissions["admin"]
+    else readProperties = readPermissions["user"]
+
+    const findUser = await User.findOne({ email: email }).select(readProperties.join(" "));
+
+    if (!findUser) throw new CustomError("User not found", 404);
+
+    res.status(200).json({
+        status: "success",
+        data: findUser
     });
 })
 
 const updateUser = asyncErrorHandler(async (req: Request, res: Response) => {
-    const { userId } = req.params;
-    const updatedUser = req.body;
-    // type TaskKey = keyof IUser;
-    //TODO Error handling to check if the key exists in IUser 
-    // const taskTypes: Record<TaskKey, string> = {}
+    const { email } = req.params;
+    const { name, email: newEmail, password } = req.body
 
-    // for (const [key, value] of Object.entries(updatedTask)) {
-    // }
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    const user = await User.findByIdAndUpdate(userId, updatedUser, { new: true, runValidators: true, context: "query" });
+    const user = await User.findOneAndUpdate({ email: email }, { name: name, email: newEmail, password: hashedPassword }, { new: true, runValidators: true });
 
     if (!user) throw new CustomError("User not found", 404);
-
-    res.status(200).json({
-        status: "success",
-        data: user
-    });
-})
-
-const createUser = asyncErrorHandler(async (req: Request, res: Response) => {
-    const createdUser: IUser = req.body;
-
-    const user = await User.create(createdUser);
 
     res.status(200).json({
         status: "success",
@@ -84,4 +82,4 @@ const deleteUser = asyncErrorHandler(async (req: Request, res: Response) => {
     });
 })
 
-export { getUser, getUsers, updateUser, deleteUser, createUser }
+export { getUser, getUsers, updateUser, currentUser, deleteUser }
