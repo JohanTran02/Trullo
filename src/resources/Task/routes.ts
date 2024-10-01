@@ -4,7 +4,7 @@ import { auth } from "../Auth/middleware.ts";
 
 const router = express.Router();
 
-router.use(auth);
+router.use(auth)
 
 router.get("", getTasks);
 router.get("/:taskId", getTask);

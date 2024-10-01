@@ -1,17 +1,15 @@
 import express from "express"
-import { getUser, getUsers, updateUser, deleteUser } from "./controller.ts";
-import { auth } from "../Auth/middleware.ts";
-import authRoutes from "../Auth/routes.ts"
+import { getUser, getUsers, updateUser, deleteUser, currentUser } from "./controller.ts";
+import { auth, authCheck } from "../Auth/middleware.ts";
 
 const router = express.Router();
 
-router.use(authRoutes);
 router.use(auth)
 
-router.get("", getUsers);
-router.get("/:userId", getUser);
-router.put("/:userId", updateUser);
-
-router.delete("", deleteUser);
+router.get("/currentUser", currentUser)
+router.get("", authCheck("read"), getUsers);
+router.get("/:email", authCheck("read"), getUser);
+router.delete("", authCheck("delete"), deleteUser);
+router.put("/:email", authCheck("update"), updateUser);
 
 export default router;

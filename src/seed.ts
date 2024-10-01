@@ -6,6 +6,7 @@ import { IUser } from "./resources/User/types.ts";
 import { User } from "./resources/User/models.ts";
 import { Project } from "./resources/Project/models.ts";
 import { Task } from "./resources/Task/models.ts";
+import bcrypt from "bcrypt"
 
 connectToDB()
 
@@ -45,15 +46,20 @@ function createRandomTask(): ITask {
 }
 
 function createRandomUser(): IUser {
+    const saltRounds = 10;
+    const hashedPassword = bcrypt.hashSync(faker.internet.password(), saltRounds);
+
     return {
         name: faker.internet.userName(),
         email: faker.internet.email(),
-        password: faker.internet.password(),
+        password: hashedPassword,
         role: "user",
+        resetToken: "",
     }
 }
 
 const fakeTasks = generateTasks()
+const fakeUsers = generateUsers();
 //Remove tasks 
 await Task.deleteMany({}).then(() => {
     console.log("Succesfully removed all tasks");
@@ -67,17 +73,8 @@ await Task.insertMany(fakeTasks).then(() => {
 }).catch((err) => console.log(err));
 
 
-// async function createProject() {
-//     await Project.create({ name: "test" })
-//     console.log("Succesfully saved projects");
-//     mongoose.connection.close();
-// }
 
-// createProject();
-
-// const fakeUsers = generateUsers();
-
-// //Remove users
+//Remove users
 // await User.deleteMany({}).then(() => {
 //     console.log("Succesfully removed all users");
 // }).catch((err) => console.log(err));
@@ -88,3 +85,11 @@ await Task.insertMany(fakeTasks).then(() => {
 //     mongoose.connection.close();
 //     process.exit(0);
 // }).catch((err) => console.log(err));
+
+// async function createProject() {
+//     await Project.create({ name: "test" })
+//     console.log("Succesfully saved projects");
+//     mongoose.connection.close();
+// }
+
+// createProject();
