@@ -7,7 +7,7 @@ const router = express.Router();
 router.use(auth)
 
 router.put("/tasks", addTaskToProject);
-router.get("", getProject);
+router.get("/:projectId", getProject);
 router.post("", createProject);
 
 export default router;
